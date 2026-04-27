@@ -284,7 +284,7 @@ app.get('/:code', (req, res) => {
 
 // ─── Root ───
 app.get('/', (req, res) => {
-  res.redirect('/admin');
+  res.sendFile(path.join(__dirname, 'public', 'splash.html'));
 });
 
 // ─── Start ───
