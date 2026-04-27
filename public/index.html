@@ -278,6 +278,35 @@ body {
   display: none;
 }
 
+.upload-progress {
+  display: none;
+  margin-top: 16px;
+  height: 4px;
+  background: var(--border-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.upload-progress.active { display: block; }
+.upload-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.15s ease-out;
+}
+
+.upload-progress-text {
+  display: none;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  color: var(--ink-light);
+  letter-spacing: 0.04em;
+}
+
+.upload-progress-text.active { display: block; }
+
 /* ─── Buttons ─── */
 .btn {
   font-family: var(--font-mono);
@@ -580,6 +609,10 @@ td.actions {
           <div class="file-info" id="file-info" style="display:none"></div>
           <input type="file" id="file-input">
         </div>
+        <div class="upload-progress" id="upload-progress">
+          <div class="upload-progress-bar" id="upload-progress-bar"></div>
+        </div>
+        <div class="upload-progress-text" id="upload-progress-text"></div>
         <div class="form-row">
           <div class="form-group narrow">
             <label>Custom code (optional)</label>
@@ -764,31 +797,71 @@ function selectFile(file) {
   uploadBtn.disabled = false;
 }
 
-document.getElementById('upload-form').addEventListener('submit', async (e) => {
+document.getElementById('upload-form').addEventListener('submit', (e) => {
   e.preventDefault();
   if (!selectedFile) return;
 
   const formData = new FormData();
   formData.append('file', selectedFile);
-  formData.append('custom_code', document.getElementById('file-code').value);
-
-  try {
-    uploadBtn.disabled = true;
-    uploadBtn.textContent = 'UPLOADING…';
-    const result = await api('POST', '/api/upload', formData);
-    toast('Uploaded: ' + result.short_url);
-    copyToClipboard(result.short_url);
-    document.getElementById('upload-form').reset();
-    selectedFile = null;
-    fileInfo.style.display = 'none';
-    uploadBtn.textContent = 'UPLOAD';
-    loadFiles();
-    loadStats();
-  } catch (e) {
-    toast(e.message, 'error');
-    uploadBtn.disabled = false;
-    uploadBtn.textContent = 'UPLOAD';
+  const customCodeInput = document.getElementById('file-custom-code');
+  if (customCodeInput && customCodeInput.value) {
+    formData.append('custom_code', customCodeInput.value);
   }
+
+  const progressEl = document.getElementById('upload-progress');
+  const barEl = document.getElementById('upload-progress-bar');
+  const textEl = document.getElementById('upload-progress-text');
+
+  progressEl.classList.add('active');
+  textEl.classList.add('active');
+  barEl.style.width = '0%';
+  textEl.textContent = '0%';
+  uploadBtn.disabled = true;
+  uploadBtn.textContent = 'UPLOADING…';
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/upload');
+
+  xhr.upload.addEventListener('progress', (event) => {
+    if (event.lengthComputable) {
+      const pct = (event.loaded / event.total) * 100;
+      barEl.style.width = pct + '%';
+      textEl.textContent = Math.round(pct) + '% — ' + formatSize(event.loaded) + ' / ' + formatSize(event.total);
+    }
+  });
+
+  xhr.addEventListener('load', () => {
+    progressEl.classList.remove('active');
+    textEl.classList.remove('active');
+    uploadBtn.textContent = 'UPLOAD';
+
+    let data;
+    try { data = JSON.parse(xhr.responseText); } catch { data = {}; }
+
+    if (xhr.status >= 200 && xhr.status < 300) {
+      toast('Uploaded: ' + data.short_url);
+      copyToClipboard(data.short_url);
+      document.getElementById('upload-form').reset();
+      selectedFile = null;
+      fileInfo.style.display = 'none';
+      uploadBtn.disabled = true;
+      loadFiles();
+      loadStats();
+    } else {
+      toast(data.error || 'Upload failed', 'error');
+      uploadBtn.disabled = false;
+    }
+  });
+
+  xhr.addEventListener('error', () => {
+    progressEl.classList.remove('active');
+    textEl.classList.remove('active');
+    uploadBtn.textContent = 'UPLOAD';
+    uploadBtn.disabled = false;
+    toast('Network error during upload', 'error');
+  });
+
+  xhr.send(formData);
 });
 
 async function loadFiles() {
