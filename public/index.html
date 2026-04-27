@@ -278,6 +278,7 @@ body {
   display: none;
 }
 
+/* ─── Upload Progress Bar ─── */
 .upload-progress {
   display: none;
   margin-top: 16px;
@@ -286,7 +287,6 @@ body {
   border-radius: 2px;
   overflow: hidden;
 }
-
 .upload-progress.active { display: block; }
 .upload-progress-bar {
   height: 100%;
@@ -294,17 +294,15 @@ body {
   background: var(--accent);
   transition: width 0.15s ease-out;
 }
-
 .upload-progress-text {
   display: none;
   margin-top: 6px;
-  margin-bottom: 6px;
-  font-family: var(--font-mono, monospace);
+  margin-bottom: 16px;
+  font-family: var(--font-mono);
   font-size: 12px;
   color: var(--ink-light);
   letter-spacing: 0.04em;
 }
-
 .upload-progress-text.active { display: block; }
 
 /* ─── Buttons ─── */
@@ -382,6 +380,7 @@ body {
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
 }
 
 .table-header {
@@ -531,6 +530,257 @@ td.actions {
   color: var(--ink-muted);
 }
 
+/* ─── Stats Tab: Summary Cards ─── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.summary-card {
+  background: var(--paper);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.summary-card .label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  margin-bottom: 10px;
+}
+
+.summary-card .figure {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.summary-card .breakdown {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+  margin-top: 8px;
+  letter-spacing: 0.04em;
+}
+
+.summary-card .breakdown .bot-count {
+  color: var(--ink-faint);
+}
+
+/* ─── Stats Tab: Tables ─── */
+td.country {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-mid);
+}
+
+td.country .flag {
+  display: inline-block;
+  margin-right: 4px;
+  font-style: normal;
+}
+
+td.referer {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-light);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td.split {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+td.split .humans {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+td.split .bots {
+  color: var(--ink-faint);
+  font-size: 10px;
+}
+
+td.split .sep {
+  color: var(--border);
+  margin: 0 4px;
+}
+
+tr.clickable {
+  cursor: pointer;
+}
+
+/* ─── Stats Tab: Detail Panel (Modal) ─── */
+.detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 28, 28, 0.5);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 100;
+  padding: 80px 20px 20px;
+  overflow-y: auto;
+}
+
+.detail-overlay.active {
+  display: flex;
+}
+
+.detail-panel {
+  background: var(--paper);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+  overflow: hidden;
+  animation: slidein 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+@keyframes slidein {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--paper-field);
+}
+
+.detail-header .info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-header .info .code-display {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.detail-header .info .target {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-light);
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-close {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: var(--ink-muted);
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.detail-close:hover {
+  color: var(--ink);
+  background: var(--border-light);
+}
+
+.detail-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.detail-body table {
+  width: 100%;
+}
+
+.detail-body td.when {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-mid);
+  white-space: nowrap;
+}
+
+.detail-body td.where {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-mid);
+}
+
+.detail-body td.where .ip {
+  color: var(--ink-faint);
+  font-size: 10px;
+  display: block;
+  margin-top: 2px;
+}
+
+.detail-body td.ua {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-light);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-body tr.is-bot td {
+  opacity: 0.55;
+}
+
+.detail-body td.tag {
+  width: 1px;
+  white-space: nowrap;
+}
+
+.detail-body td.tag .pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.detail-body td.tag .pill.human {
+  background: rgba(74, 107, 90, 0.12);
+  color: var(--green);
+}
+
+.detail-body td.tag .pill.bot {
+  background: var(--paper-field);
+  color: var(--ink-faint);
+}
+
+.detail-loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 700px) {
   .container { padding: 0 16px 60px; }
@@ -538,6 +788,9 @@ td.actions {
   .form-row { flex-direction: column; }
   .form-group.narrow { flex: 1; }
   td.url { max-width: 150px; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .detail-overlay { padding: 20px 8px; }
+  td.referer { max-width: 100px; }
 }
 </style>
 </head>
@@ -562,6 +815,7 @@ td.actions {
   <div class="tabs">
     <button class="tab active" data-panel="links">Links</button>
     <button class="tab" data-panel="files">Files</button>
+    <button class="tab" data-panel="stats">Stats</button>
   </div>
 
   <!-- ─── Links Panel ─── -->
@@ -634,6 +888,64 @@ td.actions {
     </div>
   </div>
 
+  <!-- ─── Stats Panel ─── -->
+  <div class="panel" id="panel-stats">
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="label">Last 24 hours</div>
+        <div class="figure" id="sum-24h-humans">—</div>
+        <div class="breakdown">humans · <span class="bot-count" id="sum-24h-bots">— bots</span></div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Last 7 days</div>
+        <div class="figure" id="sum-7d-humans">—</div>
+        <div class="breakdown">humans · <span class="bot-count" id="sum-7d-bots">— bots</span></div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Last 30 days</div>
+        <div class="figure" id="sum-30d-humans">—</div>
+        <div class="breakdown">humans · <span class="bot-count" id="sum-30d-bots">— bots</span></div>
+      </div>
+      <div class="summary-card">
+        <div class="label">All time</div>
+        <div class="figure" id="sum-all-humans">—</div>
+        <div class="breakdown">humans · <span class="bot-count" id="sum-all-bots">— bots</span></div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="table-header">
+        <h3>Top Links</h3>
+        <span class="count" id="top-links-count"></span>
+      </div>
+      <div id="top-links-table"></div>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="table-header">
+        <h3>Top Files</h3>
+        <span class="count" id="top-files-count"></span>
+      </div>
+      <div id="top-files-table"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Detail panel (modal) -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-panel">
+    <div class="detail-header">
+      <div class="info">
+        <div class="code-display" id="detail-code">—</div>
+        <div class="target" id="detail-target"></div>
+      </div>
+      <button class="detail-close" id="detail-close" title="Close">×</button>
+    </div>
+    <div class="detail-body" id="detail-body">
+      <div class="detail-loading">Loading…</div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -669,16 +981,80 @@ function formatDate(iso) {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function formatDateTime(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso + 'Z');
+  return d.toLocaleString('en-GB', {
+    day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
 function formatSize(bytes) {
   if (bytes < 1024) return bytes + ' B';
   if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
   return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
 }
 
+function formatReferer(ref) {
+  if (!ref) return '—';
+  try {
+    const u = new URL(ref);
+    return u.hostname;
+  } catch {
+    return ref.slice(0, 40);
+  }
+}
+
+function summariseUserAgent(ua) {
+  if (!ua) return '—';
+  // Try to pull out a recognisable browser/OS string
+  let browser = 'Unknown';
+  if (/Edg\//.test(ua)) browser = 'Edge';
+  else if (/Chrome\//.test(ua) && !/Chromium/.test(ua)) browser = 'Chrome';
+  else if (/Firefox\//.test(ua)) browser = 'Firefox';
+  else if (/Safari\//.test(ua) && !/Chrome/.test(ua)) browser = 'Safari';
+  else if (/curl\//.test(ua)) browser = 'curl';
+  else if (/wget/i.test(ua)) browser = 'wget';
+  else if (/bot|crawler|spider/i.test(ua)) {
+    const m = ua.match(/([A-Za-z0-9_-]+(?:bot|crawler|spider)[A-Za-z0-9_-]*)/i);
+    browser = m ? m[1] : 'bot';
+  }
+
+  let os = '';
+  if (/Mac OS X|macOS/.test(ua)) os = 'macOS';
+  else if (/Windows/.test(ua)) os = 'Windows';
+  else if (/Android/.test(ua)) os = 'Android';
+  else if (/iPhone|iPad|iOS/.test(ua)) os = 'iOS';
+  else if (/Linux/.test(ua)) os = 'Linux';
+
+  return os ? browser + ' · ' + os : browser;
+}
+
+function flagFromCountryCode(code) {
+  if (!code || code.length !== 2) return '';
+  // Convert two-letter country code to flag emoji
+  const A = 0x1F1E6; // Regional indicator A
+  return String.fromCodePoint(
+    A + code.toUpperCase().charCodeAt(0) - 65,
+    A + code.toUpperCase().charCodeAt(1) - 65
+  );
+}
+
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
     toast('Copied to clipboard');
   });
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // ─── Tabs ───
@@ -689,10 +1065,13 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+    if (tab.dataset.panel === 'stats') {
+      loadStatsPanel();
+    }
   });
 });
 
-// ─── Stats ───
+// ─── Header strip stats ───
 
 async function loadStats() {
   try {
@@ -721,14 +1100,14 @@ async function loadLinks() {
     for (const link of links) {
       const shortUrl = location.origin + '/' + link.code;
       html += `<tr>
-        <td class="code"><a href="${shortUrl}" target="_blank">${link.code}</a></td>
-        <td class="url" title="${link.url}">${link.url}</td>
-        <td>${link.title || ''}</td>
+        <td class="code"><a href="${shortUrl}" target="_blank">${escapeHtml(link.code)}</a></td>
+        <td class="url" title="${escapeHtml(link.url)}">${escapeHtml(link.url)}</td>
+        <td>${escapeHtml(link.title || '')}</td>
         <td class="clicks">${link.clicks}</td>
         <td class="date">${formatDate(link.created_at)}</td>
         <td class="actions">
           <button class="copy-btn" onclick="copyToClipboard('${shortUrl}')">copy</button>
-          <button class="btn-danger" onclick="deleteLink('${link.code}')">delete</button>
+          <button class="btn-danger" onclick="deleteLink('${escapeHtml(link.code)}')">delete</button>
         </td>
       </tr>`;
     }
@@ -803,7 +1182,7 @@ document.getElementById('upload-form').addEventListener('submit', (e) => {
 
   const formData = new FormData();
   formData.append('file', selectedFile);
-  const customCodeInput = document.getElementById('file-custom-code');
+  const customCodeInput = document.getElementById('file-code');
   if (customCodeInput && customCodeInput.value) {
     formData.append('custom_code', customCodeInput.value);
   }
@@ -879,14 +1258,14 @@ async function loadFiles() {
     for (const file of files) {
       const shortUrl = location.origin + '/' + file.code;
       html += `<tr>
-        <td class="code"><a href="${shortUrl}" target="_blank">${file.code}</a></td>
-        <td>${file.original_name}</td>
+        <td class="code"><a href="${shortUrl}" target="_blank">${escapeHtml(file.code)}</a></td>
+        <td>${escapeHtml(file.original_name)}</td>
         <td><span class="size-badge">${formatSize(file.size)}</span></td>
         <td class="clicks">${file.downloads}</td>
         <td class="date">${formatDate(file.created_at)}</td>
         <td class="actions">
           <button class="copy-btn" onclick="copyToClipboard('${shortUrl}')">copy</button>
-          <button class="btn-danger" onclick="deleteFile('${file.code}')">delete</button>
+          <button class="btn-danger" onclick="deleteFile('${escapeHtml(file.code)}')">delete</button>
         </td>
       </tr>`;
     }
@@ -908,6 +1287,140 @@ async function deleteFile(code) {
     toast(e.message, 'error');
   }
 }
+
+// ─── Stats Panel ───
+
+let statsLoaded = false;
+
+async function loadStatsPanel() {
+  // Always reload to keep numbers fresh, but cheap requests
+  try {
+    const [summary, topLinks, topFiles] = await Promise.all([
+      api('GET', '/api/stats/summary'),
+      api('GET', '/api/stats/top-links?limit=50'),
+      api('GET', '/api/stats/top-files?limit=50'),
+    ]);
+
+    // Summary cards
+    document.getElementById('sum-24h-humans').textContent = summary.humans_24h || 0;
+    document.getElementById('sum-24h-bots').textContent = (summary.bots_24h || 0) + ' bots';
+    document.getElementById('sum-7d-humans').textContent = summary.humans_7d || 0;
+    document.getElementById('sum-7d-bots').textContent = (summary.bots_7d || 0) + ' bots';
+    document.getElementById('sum-30d-humans').textContent = summary.humans_30d || 0;
+    document.getElementById('sum-30d-bots').textContent = (summary.bots_30d || 0) + ' bots';
+    document.getElementById('sum-all-humans').textContent = summary.humans_all || 0;
+    document.getElementById('sum-all-bots').textContent = (summary.bots_all || 0) + ' bots';
+
+    renderTopLinks(topLinks);
+    renderTopFiles(topFiles);
+    statsLoaded = true;
+  } catch (e) {
+    toast('Could not load stats: ' + e.message, 'error');
+  }
+}
+
+function renderTopLinks(rows) {
+  const container = document.getElementById('top-links-table');
+  document.getElementById('top-links-count').textContent = rows.length + ' shown';
+
+  if (rows.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">∅</div><p>No links yet.</p></div>';
+    return;
+  }
+
+  let html = '<table><thead><tr><th>Code</th><th>Destination</th><th>Hits</th><th>Top country</th><th>Top referrer</th><th>Last hit</th></tr></thead><tbody>';
+  for (const r of rows) {
+    const flag = flagFromCountryCode(r.top_country_code);
+    html += `<tr class="clickable" onclick="openDetail('${escapeHtml(r.code)}', ${JSON.stringify(escapeHtml(r.url))})">
+      <td class="code">${escapeHtml(r.code)}</td>
+      <td class="url" title="${escapeHtml(r.url)}">${escapeHtml(r.title || r.url)}</td>
+      <td class="split"><span class="humans">${r.human_hits || 0}</span><span class="sep">·</span><span class="bots">${r.bot_hits || 0} bot</span></td>
+      <td class="country">${flag ? '<i class="flag">' + flag + '</i>' : ''}${escapeHtml(r.top_country || '—')}</td>
+      <td class="referer" title="${escapeHtml(r.top_referer || '')}">${escapeHtml(formatReferer(r.top_referer))}</td>
+      <td class="date">${r.last_hit ? formatDate(r.last_hit) : '—'}</td>
+    </tr>`;
+  }
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function renderTopFiles(rows) {
+  const container = document.getElementById('top-files-table');
+  document.getElementById('top-files-count').textContent = rows.length + ' shown';
+
+  if (rows.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">∅</div><p>No files yet.</p></div>';
+    return;
+  }
+
+  let html = '<table><thead><tr><th>Code</th><th>Filename</th><th>Downloads</th><th>Top country</th><th>Top referrer</th><th>Last hit</th></tr></thead><tbody>';
+  for (const r of rows) {
+    const flag = flagFromCountryCode(r.top_country_code);
+    html += `<tr class="clickable" onclick="openDetail('${escapeHtml(r.code)}', ${JSON.stringify(escapeHtml(r.original_name))})">
+      <td class="code">${escapeHtml(r.code)}</td>
+      <td>${escapeHtml(r.original_name)}</td>
+      <td class="split"><span class="humans">${r.human_hits || 0}</span><span class="sep">·</span><span class="bots">${r.bot_hits || 0} bot</span></td>
+      <td class="country">${flag ? '<i class="flag">' + flag + '</i>' : ''}${escapeHtml(r.top_country || '—')}</td>
+      <td class="referer" title="${escapeHtml(r.top_referer || '')}">${escapeHtml(formatReferer(r.top_referer))}</td>
+      <td class="date">${r.last_hit ? formatDate(r.last_hit) : '—'}</td>
+    </tr>`;
+  }
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+// ─── Detail Panel ───
+
+const detailOverlay = document.getElementById('detail-overlay');
+const detailBody = document.getElementById('detail-body');
+
+async function openDetail(code, target) {
+  document.getElementById('detail-code').textContent = code;
+  document.getElementById('detail-target').textContent = target || '';
+  detailBody.innerHTML = '<div class="detail-loading">Loading…</div>';
+  detailOverlay.classList.add('active');
+
+  try {
+    const rows = await api('GET', '/api/stats/detail/' + encodeURIComponent(code) + '?limit=200');
+    if (rows.length === 0) {
+      detailBody.innerHTML = '<div class="empty-state"><div class="empty-icon">∅</div><p>No clicks recorded yet for this code.</p></div>';
+      return;
+    }
+
+    let html = '<table><thead><tr><th>When</th><th>Where</th><th>Referrer</th><th>Browser/OS</th><th></th></tr></thead><tbody>';
+    for (const r of rows) {
+      const flag = flagFromCountryCode(r.country_code);
+      const place = r.country
+        ? (r.city ? r.city + ', ' + r.country : r.country)
+        : '—';
+      const ref = formatReferer(r.referer);
+      const ua = summariseUserAgent(r.user_agent);
+      html += `<tr class="${r.is_bot ? 'is-bot' : ''}">
+        <td class="when">${formatDateTime(r.clicked_at)}</td>
+        <td class="where">${flag ? '<i class="flag">' + flag + '</i> ' : ''}${escapeHtml(place)}<span class="ip">${escapeHtml(r.ip || '—')}</span></td>
+        <td class="ua" title="${escapeHtml(r.referer || '')}">${escapeHtml(ref)}</td>
+        <td class="ua" title="${escapeHtml(r.user_agent || '')}">${escapeHtml(ua)}</td>
+        <td class="tag"><span class="pill ${r.is_bot ? 'bot' : 'human'}">${r.is_bot ? 'bot' : 'human'}</span></td>
+      </tr>`;
+    }
+    html += '</tbody></table>';
+    detailBody.innerHTML = html;
+  } catch (e) {
+    detailBody.innerHTML = '<div class="empty-state"><p>' + escapeHtml(e.message) + '</p></div>';
+  }
+}
+
+function closeDetail() {
+  detailOverlay.classList.remove('active');
+}
+
+document.getElementById('detail-close').addEventListener('click', closeDetail);
+detailOverlay.addEventListener('click', (e) => {
+  if (e.target === detailOverlay) closeDetail();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && detailOverlay.classList.contains('active')) closeDetail();
+});
 
 // ─── Init ───
 loadStats();
