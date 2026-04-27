@@ -1,0 +1,21 @@
+# /etc/systemd/system/slouch.service
+# Runs the slou.ch Express app as a system service
+
+[Unit]
+Description=slou.ch URL shortener and file host
+After=network.target
+
+[Service]
+Type=simple
+User=ghostuser
+WorkingDirectory=/var/www/slouch
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+Environment=PORT=3001
+Environment=BASE_URL=https://slou.ch
+Environment=ADMIN_USER=admin
+Environment=ADMIN_PASS=CHANGE_THIS_PASSWORD
+
+[Install]
+WantedBy=multi-user.target

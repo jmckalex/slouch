@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>slou.ch — admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ─── Design Tokens (TROCP palette) ─── */
+:root {
+  --ink: #2c2c2c;
+  --ink-mid: #444;
+  --ink-light: #888;
+  --ink-muted: #999;
+  --ink-faint: #aaa;
+  --paper: #ffffff;
+  --paper-warm: #faf9f7;
+  --paper-field: #f5f4f2;
+  --accent: #8b7355;
+  --accent-hover: #6d5a43;
+  --accent-glow: rgba(139,115,85,0.08);
+  --accent-light: rgba(139,115,85,0.15);
+  --burgundy: #8b4a4a;
+  --green: #4a6b5a;
+  --gold: #b8a060;
+  --border: #e2e0dc;
+  --border-light: #ece8e2;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(44,36,24,0.06);
+  --radius: 8px;
+  --radius-sm: 6px;
+  --font-serif: 'Crimson Pro', Georgia, serif;
+  --font-mono: 'JetBrains Mono', Menlo, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-serif);
+  background: var(--paper-field);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ─── Header ─── */
+.header {
+  background: #1a1a1a;
+  padding: 28px 0;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 18px,
+      rgba(139,115,85,0.03) 18px,
+      rgba(139,115,85,0.03) 19px
+    );
+  pointer-events: none;
+}
+
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.header h1 {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: -0.02em;
+}
+
+.header h1 span {
+  color: rgba(232,228,221,0.5);
+  font-weight: 400;
+}
+
+.header .stats {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(232,228,221,0.4);
+  letter-spacing: 0.04em;
+  display: flex;
+  gap: 20px;
+}
+
+.header .stats .stat-value {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ─── Layout ─── */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* ─── Tabs ─── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0;
+}
+
+.tab {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  color: var(--accent);
+}
+
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ─── Panels ─── */
+.panel {
+  display: none;
+}
+
+.panel.active {
+  display: block;
+}
+
+/* ─── Create Forms ─── */
+.form-card {
+  background: var(--paper);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-card h2 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.form-row.stacked {
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group.narrow {
+  flex: 0 0 180px;
+}
+
+.form-group label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"] {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--paper-field);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus {
+  border-color: var(--accent);
+  background: var(--paper);
+}
+
+.form-group input::placeholder {
+  color: var(--ink-faint);
+}
+
+/* ─── File Drop Zone ─── */
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--paper-field);
+  margin-bottom: 14px;
+}
+
+.drop-zone:hover,
+.drop-zone.dragover {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+
+.drop-zone .drop-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.3;
+}
+
+.drop-zone .drop-text {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: var(--ink-light);
+}
+
+.drop-zone .drop-text strong {
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.drop-zone .file-info {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  margin-top: 8px;
+}
+
+.drop-zone input[type="file"] {
+  display: none;
+}
+
+/* ─── Buttons ─── */
+.btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-danger {
+  background: none;
+  color: var(--burgundy);
+  padding: 4px 12px;
+  font-size: 11px;
+  border: 1px solid rgba(139,74,74,0.3);
+  border-radius: 12px;
+}
+
+.btn-danger:hover {
+  background: rgba(139,74,74,0.08);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ─── Notification ─── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  background: var(--ink);
+  box-shadow: var(--shadow-md);
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  z-index: 1000;
+  max-width: 400px;
+}
+
+.toast.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast.success { background: var(--green); }
+.toast.error { background: var(--burgundy); }
+
+/* ─── Results Table ─── */
+.table-wrapper {
+  background: var(--paper);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--paper-field);
+}
+
+.table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+.table-header .count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-light);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 14px;
+  color: var(--ink-mid);
+  vertical-align: middle;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: var(--accent-glow);
+}
+
+td.code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+td.code a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+td.code a:hover {
+  text-decoration: underline;
+}
+
+td.url {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-light);
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td.clicks {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink);
+  text-align: center;
+}
+
+td.date {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+td.actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.copy-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--ink-light);
+  padding: 3px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── Empty State ─── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-muted);
+}
+
+.empty-state .empty-icon {
+  font-size: 40px;
+  opacity: 0.2;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 15px;
+  font-style: italic;
+}
+
+/* ─── File Size Badge ─── */
+.size-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--paper-field);
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: var(--ink-muted);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 700px) {
+  .container { padding: 0 16px 60px; }
+  .header-inner { flex-direction: column; gap: 8px; padding: 0 16px; }
+  .form-row { flex-direction: column; }
+  .form-group.narrow { flex: 1; }
+  td.url { max-width: 150px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>slou.ch <span>/ admin</span></h1>
+    <div class="stats" id="stats">
+      <span><span class="stat-value" id="stat-links">—</span> links</span>
+      <span><span class="stat-value" id="stat-clicks">—</span> clicks</span>
+      <span><span class="stat-value" id="stat-files">—</span> files</span>
+      <span><span class="stat-value" id="stat-downloads">—</span> downloads</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-panel="links">Links</button>
+    <button class="tab" data-panel="files">Files</button>
+  </div>
+
+  <!-- ─── Links Panel ─── -->
+  <div class="panel active" id="panel-links">
+    <div class="form-card">
+      <h2>Shorten a URL</h2>
+      <form id="shorten-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Destination URL</label>
+            <input type="url" id="link-url" placeholder="https://example.com/very-long-url" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title (optional)</label>
+            <input type="text" id="link-title" placeholder="A description for your reference">
+          </div>
+          <div class="form-group narrow">
+            <label>Custom code (optional)</label>
+            <input type="text" id="link-code" placeholder="my-link">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Shorten</button>
+      </form>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="table-header">
+        <h3>All Links</h3>
+        <span class="count" id="links-count"></span>
+      </div>
+      <div id="links-table"></div>
+    </div>
+  </div>
+
+  <!-- ─── Files Panel ─── -->
+  <div class="panel" id="panel-files">
+    <div class="form-card">
+      <h2>Upload a file</h2>
+      <form id="upload-form">
+        <div class="drop-zone" id="drop-zone">
+          <div class="drop-icon">↑</div>
+          <div class="drop-text">Drop a file here or <strong>browse</strong></div>
+          <div class="file-info" id="file-info" style="display:none"></div>
+          <input type="file" id="file-input">
+        </div>
+        <div class="form-row">
+          <div class="form-group narrow">
+            <label>Custom code (optional)</label>
+            <input type="text" id="file-code" placeholder="my-file">
+          </div>
+          <div class="form-group" style="justify-content: flex-end;">
+            <button type="submit" class="btn btn-primary" id="upload-btn" disabled>Upload</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="table-header">
+        <h3>All Files</h3>
+        <span class="count" id="files-count"></span>
+      </div>
+      <div id="files-table"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── Helpers ───
+
+function toast(message, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = message;
+  el.className = 'toast ' + type + ' visible';
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('visible'), 3000);
+}
+
+async function api(method, path, body) {
+  const opts = { method, headers: {} };
+  if (body instanceof FormData) {
+    opts.body = body;
+  } else if (body) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(body);
+  }
+  const res = await fetch(path, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso + 'Z');
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    toast('Copied to clipboard');
+  });
+}
+
+// ─── Tabs ───
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+  });
+});
+
+// ─── Stats ───
+
+async function loadStats() {
+  try {
+    const s = await api('GET', '/api/stats');
+    document.getElementById('stat-links').textContent = s.total_links || 0;
+    document.getElementById('stat-clicks').textContent = s.total_clicks || 0;
+    document.getElementById('stat-files').textContent = s.total_files || 0;
+    document.getElementById('stat-downloads').textContent = s.total_downloads || 0;
+  } catch (e) {}
+}
+
+// ─── Links ───
+
+async function loadLinks() {
+  try {
+    const links = await api('GET', '/api/links');
+    const container = document.getElementById('links-table');
+    document.getElementById('links-count').textContent = links.length + ' total';
+
+    if (links.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">⟶</div><p>No links yet. Create your first one above.</p></div>';
+      return;
+    }
+
+    let html = '<table><thead><tr><th>Code</th><th>Destination</th><th>Title</th><th>Clicks</th><th>Created</th><th></th></tr></thead><tbody>';
+    for (const link of links) {
+      const shortUrl = location.origin + '/' + link.code;
+      html += `<tr>
+        <td class="code"><a href="${shortUrl}" target="_blank">${link.code}</a></td>
+        <td class="url" title="${link.url}">${link.url}</td>
+        <td>${link.title || ''}</td>
+        <td class="clicks">${link.clicks}</td>
+        <td class="date">${formatDate(link.created_at)}</td>
+        <td class="actions">
+          <button class="copy-btn" onclick="copyToClipboard('${shortUrl}')">copy</button>
+          <button class="btn-danger" onclick="deleteLink('${link.code}')">delete</button>
+        </td>
+      </tr>`;
+    }
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+}
+
+async function deleteLink(code) {
+  if (!confirm('Delete this link?')) return;
+  try {
+    await api('DELETE', '/api/links/' + code);
+    toast('Link deleted');
+    loadLinks();
+    loadStats();
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+}
+
+document.getElementById('shorten-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    const result = await api('POST', '/api/shorten', {
+      url: document.getElementById('link-url').value,
+      title: document.getElementById('link-title').value,
+      custom_code: document.getElementById('link-code').value,
+    });
+    toast('Shortened: ' + result.short_url);
+    copyToClipboard(result.short_url);
+    document.getElementById('shorten-form').reset();
+    loadLinks();
+    loadStats();
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+});
+
+// ─── Files ───
+
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const fileInfo = document.getElementById('file-info');
+const uploadBtn = document.getElementById('upload-btn');
+let selectedFile = null;
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) selectFile(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files.length) selectFile(fileInput.files[0]);
+});
+
+function selectFile(file) {
+  selectedFile = file;
+  fileInfo.textContent = file.name + ' (' + formatSize(file.size) + ')';
+  fileInfo.style.display = 'block';
+  uploadBtn.disabled = false;
+}
+
+document.getElementById('upload-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!selectedFile) return;
+
+  const formData = new FormData();
+  formData.append('file', selectedFile);
+  formData.append('custom_code', document.getElementById('file-code').value);
+
+  try {
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = 'UPLOADING…';
+    const result = await api('POST', '/api/upload', formData);
+    toast('Uploaded: ' + result.short_url);
+    copyToClipboard(result.short_url);
+    document.getElementById('upload-form').reset();
+    selectedFile = null;
+    fileInfo.style.display = 'none';
+    uploadBtn.textContent = 'UPLOAD';
+    loadFiles();
+    loadStats();
+  } catch (e) {
+    toast(e.message, 'error');
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = 'UPLOAD';
+  }
+});
+
+async function loadFiles() {
+  try {
+    const files = await api('GET', '/api/files');
+    const container = document.getElementById('files-table');
+    document.getElementById('files-count').textContent = files.length + ' total';
+
+    if (files.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">↑</div><p>No files yet. Upload your first one above.</p></div>';
+      return;
+    }
+
+    let html = '<table><thead><tr><th>Code</th><th>Filename</th><th>Size</th><th>Downloads</th><th>Created</th><th></th></tr></thead><tbody>';
+    for (const file of files) {
+      const shortUrl = location.origin + '/' + file.code;
+      html += `<tr>
+        <td class="code"><a href="${shortUrl}" target="_blank">${file.code}</a></td>
+        <td>${file.original_name}</td>
+        <td><span class="size-badge">${formatSize(file.size)}</span></td>
+        <td class="clicks">${file.downloads}</td>
+        <td class="date">${formatDate(file.created_at)}</td>
+        <td class="actions">
+          <button class="copy-btn" onclick="copyToClipboard('${shortUrl}')">copy</button>
+          <button class="btn-danger" onclick="deleteFile('${file.code}')">delete</button>
+        </td>
+      </tr>`;
+    }
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+}
+
+async function deleteFile(code) {
+  if (!confirm('Delete this file? This cannot be undone.')) return;
+  try {
+    await api('DELETE', '/api/files/' + code);
+    toast('File deleted');
+    loadFiles();
+    loadStats();
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+}
+
+// ─── Init ───
+loadStats();
+loadLinks();
+loadFiles();
+</script>
+</body>
+</html>
