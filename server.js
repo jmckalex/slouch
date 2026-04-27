@@ -131,15 +131,21 @@ const stmts = {
   // Stats: summary buckets (human vs bot)
   summary: db.prepare(`
     SELECT
-      SUM(CASE WHEN is_bot = 0 AND clicked_at >= datetime('now', '-1 day') THEN 1 ELSE 0 END) as humans_24h,
-      SUM(CASE WHEN is_bot = 1 AND clicked_at >= datetime('now', '-1 day') THEN 1 ELSE 0 END) as bots_24h,
-      SUM(CASE WHEN is_bot = 0 AND clicked_at >= datetime('now', '-7 days') THEN 1 ELSE 0 END) as humans_7d,
-      SUM(CASE WHEN is_bot = 1 AND clicked_at >= datetime('now', '-7 days') THEN 1 ELSE 0 END) as bots_7d,
-      SUM(CASE WHEN is_bot = 0 AND clicked_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END) as humans_30d,
-      SUM(CASE WHEN is_bot = 1 AND clicked_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END) as bots_30d,
-      SUM(CASE WHEN is_bot = 0 THEN 1 ELSE 0 END) as humans_all,
-      SUM(CASE WHEN is_bot = 1 THEN 1 ELSE 0 END) as bots_all
-    FROM click_log
+      SUM(CASE WHEN c.is_bot = 0 AND c.clicked_at >= datetime('now', '-1 day') THEN 1 ELSE 0 END) as humans_24h,
+      SUM(CASE WHEN c.is_bot = 1 AND c.clicked_at >= datetime('now', '-1 day') THEN 1 ELSE 0 END) as bots_24h,
+      SUM(CASE WHEN c.is_bot = 0 AND c.clicked_at >= datetime('now', '-7 days') THEN 1 ELSE 0 END) as humans_7d,
+      SUM(CASE WHEN c.is_bot = 1 AND c.clicked_at >= datetime('now', '-7 days') THEN 1 ELSE 0 END) as bots_7d,
+      SUM(CASE WHEN c.is_bot = 0 AND c.clicked_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END) as humans_30d,
+      SUM(CASE WHEN c.is_bot = 1 AND c.clicked_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END) as bots_30d,
+      SUM(CASE WHEN c.is_bot = 0 THEN 1 ELSE 0 END) as humans_all,
+      SUM(CASE WHEN c.is_bot = 1 THEN 1 ELSE 0 END) as bots_all,
+      SUM(CASE WHEN l.code IS NULL AND f.code IS NULL AND c.clicked_at >= datetime('now', '-1 day') THEN 1 ELSE 0 END) as orphaned_24h,
+      SUM(CASE WHEN l.code IS NULL AND f.code IS NULL AND c.clicked_at >= datetime('now', '-7 days') THEN 1 ELSE 0 END) as orphaned_7d,
+      SUM(CASE WHEN l.code IS NULL AND f.code IS NULL AND c.clicked_at >= datetime('now', '-30 days') THEN 1 ELSE 0 END) as orphaned_30d,
+      SUM(CASE WHEN l.code IS NULL AND f.code IS NULL THEN 1 ELSE 0 END) as orphaned_all
+    FROM click_log c
+    LEFT JOIN links l ON c.code = l.code
+    LEFT JOIN files f ON c.code = f.code
   `),
 
   // Top links: aggregate stats per code (links only)

@@ -577,6 +577,16 @@ td.actions {
   color: var(--ink-faint);
 }
 
+.summary-card .orphaned-line {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--burgundy);
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+  font-style: italic;
+}
+
 /* ─── Stats Tab: Tables ─── */
 td.country {
   font-family: var(--font-mono);
@@ -895,21 +905,33 @@ tr.clickable {
         <div class="label">Last 24 hours</div>
         <div class="figure" id="sum-24h-humans">—</div>
         <div class="breakdown">humans · <span class="bot-count" id="sum-24h-bots">— bots</span></div>
+        <div class="orphaned-line" id="sum-24h-orphaned-line" style="display:none">
+          <span id="sum-24h-orphaned">0</span> orphaned
+        </div>
       </div>
       <div class="summary-card">
         <div class="label">Last 7 days</div>
         <div class="figure" id="sum-7d-humans">—</div>
         <div class="breakdown">humans · <span class="bot-count" id="sum-7d-bots">— bots</span></div>
+        <div class="orphaned-line" id="sum-7d-orphaned-line" style="display:none">
+          <span id="sum-7d-orphaned">0</span> orphaned
+        </div>
       </div>
       <div class="summary-card">
         <div class="label">Last 30 days</div>
         <div class="figure" id="sum-30d-humans">—</div>
         <div class="breakdown">humans · <span class="bot-count" id="sum-30d-bots">— bots</span></div>
+        <div class="orphaned-line" id="sum-30d-orphaned-line" style="display:none">
+          <span id="sum-30d-orphaned">0</span> orphaned
+        </div>
       </div>
       <div class="summary-card">
         <div class="label">All time</div>
         <div class="figure" id="sum-all-humans">—</div>
         <div class="breakdown">humans · <span class="bot-count" id="sum-all-bots">— bots</span></div>
+        <div class="orphaned-line" id="sum-all-orphaned-line" style="display:none">
+          <span id="sum-all-orphaned">0</span> orphaned
+        </div>
       </div>
     </div>
 
@@ -1301,7 +1323,7 @@ async function loadStatsPanel() {
       api('GET', '/api/stats/top-files?limit=50'),
     ]);
 
-    // Summary cards
+    // Summary cards — humans/bots
     document.getElementById('sum-24h-humans').textContent = summary.humans_24h || 0;
     document.getElementById('sum-24h-bots').textContent = (summary.bots_24h || 0) + ' bots';
     document.getElementById('sum-7d-humans').textContent = summary.humans_7d || 0;
@@ -1310,6 +1332,22 @@ async function loadStatsPanel() {
     document.getElementById('sum-30d-bots').textContent = (summary.bots_30d || 0) + ' bots';
     document.getElementById('sum-all-humans').textContent = summary.humans_all || 0;
     document.getElementById('sum-all-bots').textContent = (summary.bots_all || 0) + ' bots';
+
+    // Orphaned line — only show when non-zero
+    const showOrphaned = (key) => {
+      const count = summary['orphaned_' + key] || 0;
+      const line = document.getElementById('sum-' + key + '-orphaned-line');
+      if (count > 0) {
+        document.getElementById('sum-' + key + '-orphaned').textContent = count;
+        line.style.display = 'block';
+      } else {
+        line.style.display = 'none';
+      }
+    };
+    showOrphaned('24h');
+    showOrphaned('7d');
+    showOrphaned('30d');
+    showOrphaned('all');
 
     renderTopLinks(topLinks);
     renderTopFiles(topFiles);
