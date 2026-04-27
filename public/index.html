@@ -9,8 +9,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+<!-- marked.js for client-side preview rendering -->
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+
 <style>
-/* ─── Design Tokens (TROCP palette) ─── */
 :root {
   --ink: #2c2c2c;
   --ink-mid: #444;
@@ -50,745 +52,271 @@ body {
 }
 
 /* ─── Header ─── */
-.header {
-  background: #1a1a1a;
-  padding: 28px 0;
-  margin-bottom: 40px;
-  position: relative;
-  overflow: hidden;
-}
-
+.header { background: #1a1a1a; padding: 28px 0; margin-bottom: 40px; position: relative; overflow: hidden; }
 .header::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 18px,
-      rgba(139,115,85,0.03) 18px,
-      rgba(139,115,85,0.03) 19px
-    );
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(139,115,85,0.03) 18px, rgba(139,115,85,0.03) 19px);
   pointer-events: none;
 }
-
 .header-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 32px;
-  position: relative;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  max-width: 1100px; margin: 0 auto; padding: 0 32px;
+  position: relative; display: flex; align-items: baseline; justify-content: space-between;
 }
-
-.header h1 {
-  font-family: var(--font-mono);
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--gold);
-  letter-spacing: -0.02em;
-}
-
-.header h1 span {
-  color: rgba(232,228,221,0.5);
-  font-weight: 400;
-}
-
-.header .stats {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: rgba(232,228,221,0.4);
-  letter-spacing: 0.04em;
-  display: flex;
-  gap: 20px;
-}
-
-.header .stats .stat-value {
-  color: var(--gold);
-  font-weight: 500;
-}
+.header h1 { font-family: var(--font-mono); font-size: 20px; font-weight: 500; color: var(--gold); letter-spacing: -0.02em; }
+.header h1 span { color: rgba(232,228,221,0.5); font-weight: 400; }
+.header .stats { font-family: var(--font-mono); font-size: 11px; color: rgba(232,228,221,0.4); letter-spacing: 0.04em; display: flex; gap: 20px; }
+.header .stats .stat-value { color: var(--gold); font-weight: 500; }
 
 /* ─── Layout ─── */
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 32px 80px;
-}
+.container { max-width: 1100px; margin: 0 auto; padding: 0 32px 80px; }
 
 /* ─── Tabs ─── */
-.tabs {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 32px;
-  border-bottom: 2px solid var(--border);
-  padding-bottom: 0;
-}
-
+.tabs { display: flex; gap: 4px; margin-bottom: 32px; border-bottom: 2px solid var(--border); padding-bottom: 0; }
 .tab {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ink-muted);
-  background: none;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  transition: all 0.2s ease;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted);
+  background: none; border: none; padding: 10px 20px; cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s ease;
 }
+.tab:hover { color: var(--accent); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-.tab:hover {
-  color: var(--accent);
-}
+.panel { display: none; }
+.panel.active { display: block; }
 
-.tab.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-
-/* ─── Panels ─── */
-.panel {
-  display: none;
-}
-
-.panel.active {
-  display: block;
-}
-
-/* ─── Create Forms ─── */
+/* ─── Forms ─── */
 .form-card {
-  background: var(--paper);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius);
-  padding: 28px;
-  margin-bottom: 32px;
-  box-shadow: var(--shadow-sm);
+  background: var(--paper); border: 1px solid var(--border-light); border-radius: var(--radius);
+  padding: 28px; margin-bottom: 32px; box-shadow: var(--shadow-sm);
 }
-
-.form-card h2 {
-  font-family: var(--font-serif);
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 20px;
-  letter-spacing: -0.01em;
-}
-
-.form-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.form-row.stacked {
-  flex-direction: column;
-  gap: 14px;
-}
-
-.form-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.form-group.narrow {
-  flex: 0 0 180px;
-}
-
+.form-card h2 { font-family: var(--font-serif); font-size: 20px; font-weight: 600; color: var(--ink); margin-bottom: 20px; letter-spacing: -0.01em; }
+.form-row { display: flex; gap: 12px; margin-bottom: 14px; }
+.form-row.stacked { flex-direction: column; gap: 14px; }
+.form-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.form-group.narrow { flex: 0 0 180px; }
 .form-group label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ink-muted);
+  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted);
 }
-
-.form-group input[type="text"],
-.form-group input[type="url"] {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  padding: 10px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--paper-field);
-  color: var(--ink);
-  outline: none;
+.form-group input[type="text"], .form-group input[type="url"], .form-group textarea {
+  font-family: var(--font-mono); font-size: 14px; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--paper-field); color: var(--ink); outline: none;
   transition: border-color 0.2s ease;
 }
+.form-group input:focus, .form-group textarea:focus { border-color: var(--accent); background: var(--paper); }
+.form-group input::placeholder, .form-group textarea::placeholder { color: var(--ink-faint); }
 
-.form-group input:focus {
-  border-color: var(--accent);
-  background: var(--paper);
+/* ─── Note editor (side-by-side markdown + preview) ─── */
+.note-section {
+  margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--border);
+}
+.note-toggle {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent);
+  background: none; border: none; cursor: pointer; padding: 0; margin-bottom: 12px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.note-toggle::before { content: '+'; font-size: 14px; transition: transform 0.2s ease; }
+.note-toggle.expanded::before { content: '−'; }
+.note-editor-wrapper { display: none; }
+.note-editor-wrapper.expanded { display: block; }
+.note-editor-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  margin-bottom: 14px; height: 280px;
+}
+.note-editor-pane, .note-preview-pane {
+  display: flex; flex-direction: column; gap: 5px; min-height: 0;
+}
+.note-editor-pane label, .note-preview-pane .preview-label {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted);
+}
+.note-textarea {
+  flex: 1; resize: none;
+  font-family: var(--font-mono); font-size: 13px; line-height: 1.55;
+  padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--paper-field); color: var(--ink); outline: none;
+  transition: border-color 0.2s ease;
+}
+.note-textarea:focus { border-color: var(--accent); background: var(--paper); }
+.note-preview {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 12px 16px;
+  border: 1px solid var(--border-light); border-radius: var(--radius-sm);
+  background: var(--paper-warm);
+  font-family: var(--font-serif); font-size: 14px; line-height: 1.6; color: var(--ink-mid);
+}
+.note-preview > *:first-child { margin-top: 0; }
+.note-preview > *:last-child { margin-bottom: 0; }
+.note-preview h1, .note-preview h2, .note-preview h3 { font-weight: 600; margin: 0.7em 0 0.3em; color: var(--ink); }
+.note-preview h1 { font-size: 1.3em; } .note-preview h2 { font-size: 1.15em; } .note-preview h3 { font-size: 1.05em; }
+.note-preview p { margin: 0.5em 0; }
+.note-preview a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--border); }
+.note-preview a:hover { border-bottom-color: var(--accent); }
+.note-preview ul, .note-preview ol { margin: 0.5em 0 0.5em 1.4em; }
+.note-preview li { margin: 0.2em 0; }
+.note-preview blockquote { margin: 0.7em 0; padding-left: 0.8em; border-left: 2px solid var(--accent); color: var(--ink-light); font-style: italic; }
+.note-preview code { font-family: var(--font-mono); font-size: 0.85em; background: var(--paper-field); padding: 1px 5px; border-radius: 3px; color: var(--accent); }
+.note-preview pre { font-family: var(--font-mono); font-size: 0.82em; background: var(--paper-field); padding: 10px 12px; border-radius: 4px; overflow-x: auto; margin: 0.7em 0; }
+.note-preview pre code { background: none; padding: 0; color: var(--ink); }
+.note-preview hr { margin: 1em 0; border: 0; border-top: 1px dashed var(--border); }
+.note-preview .placeholder { color: var(--ink-faint); font-style: italic; }
+.note-help {
+  font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint);
+  letter-spacing: 0.04em; margin-top: 4px;
 }
 
-.form-group input::placeholder {
-  color: var(--ink-faint);
-}
-
-/* ─── File Drop Zone ─── */
+/* ─── Drop Zone ─── */
 .drop-zone {
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 40px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: var(--paper-field);
-  margin-bottom: 14px;
+  border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px;
+  text-align: center; cursor: pointer; transition: all 0.2s ease;
+  background: var(--paper-field); margin-bottom: 14px;
 }
-
-.drop-zone:hover,
-.drop-zone.dragover {
-  border-color: var(--accent);
-  background: var(--accent-glow);
-}
-
-.drop-zone .drop-icon {
-  font-size: 32px;
-  margin-bottom: 8px;
-  opacity: 0.3;
-}
-
-.drop-zone .drop-text {
-  font-family: var(--font-serif);
-  font-size: 15px;
-  color: var(--ink-light);
-}
-
-.drop-zone .drop-text strong {
-  color: var(--accent);
-  cursor: pointer;
-}
-
-.drop-zone .file-info {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--accent);
-  margin-top: 8px;
-}
-
-.drop-zone input[type="file"] {
-  display: none;
-}
+.drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: var(--accent-glow); }
+.drop-zone .drop-icon { font-size: 32px; margin-bottom: 8px; opacity: 0.3; }
+.drop-zone .drop-text { font-family: var(--font-serif); font-size: 15px; color: var(--ink-light); }
+.drop-zone .drop-text strong { color: var(--accent); cursor: pointer; }
+.drop-zone .file-info { font-family: var(--font-mono); font-size: 12px; color: var(--accent); margin-top: 8px; }
+.drop-zone input[type="file"] { display: none; }
 
 /* ─── Upload Progress Bar ─── */
-.upload-progress {
-  display: none;
-  margin-top: 16px;
-  height: 4px;
-  background: var(--border-light);
-  border-radius: 2px;
-  overflow: hidden;
-}
+.upload-progress { display: none; margin-top: 16px; height: 4px; background: var(--border-light); border-radius: 2px; overflow: hidden; }
 .upload-progress.active { display: block; }
-.upload-progress-bar {
-  height: 100%;
-  width: 0%;
-  background: var(--accent);
-  transition: width 0.15s ease-out;
-}
-.upload-progress-text {
-  display: none;
-  margin-top: 6px;
-  margin-bottom: 16px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--ink-light);
-  letter-spacing: 0.04em;
-}
+.upload-progress-bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.15s ease-out; }
+.upload-progress-text { display: none; margin-top: 6px; margin-bottom: 16px; font-family: var(--font-mono); font-size: 12px; color: var(--ink-light); letter-spacing: 0.04em; }
 .upload-progress-text.active { display: block; }
 
 /* ─── Buttons ─── */
 .btn {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 10px 24px;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 10px 24px; border: none; border-radius: 20px;
+  cursor: pointer; transition: all 0.2s ease;
 }
-
-.btn-primary {
-  background: var(--accent);
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background: var(--accent-hover);
-}
-
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); }
 .btn-danger {
-  background: none;
-  color: var(--burgundy);
-  padding: 4px 12px;
-  font-size: 11px;
-  border: 1px solid rgba(139,74,74,0.3);
-  border-radius: 12px;
+  background: none; color: var(--burgundy); padding: 4px 12px; font-size: 11px;
+  border: 1px solid rgba(139,74,74,0.3); border-radius: 12px;
 }
+.btn-danger:hover { background: rgba(139,74,74,0.08); }
+.btn:disabled { opacity: 0.4; pointer-events: none; }
 
-.btn-danger:hover {
-  background: rgba(139,74,74,0.08);
-}
-
-.btn:disabled {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-/* ─── Notification ─── */
+/* ─── Toast ─── */
 .toast {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  padding: 12px 20px;
-  border-radius: var(--radius-sm);
-  color: #fff;
-  background: var(--ink);
-  box-shadow: var(--shadow-md);
-  transform: translateY(100px);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-  z-index: 1000;
-  max-width: 400px;
+  position: fixed; bottom: 24px; right: 24px;
+  font-family: var(--font-mono); font-size: 12px; padding: 12px 20px;
+  border-radius: var(--radius-sm); color: #fff; background: var(--ink);
+  box-shadow: var(--shadow-md); transform: translateY(100px); opacity: 0;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1); z-index: 1000; max-width: 400px;
 }
-
-.toast.visible {
-  transform: translateY(0);
-  opacity: 1;
-}
-
+.toast.visible { transform: translateY(0); opacity: 1; }
 .toast.success { background: var(--green); }
 .toast.error { background: var(--burgundy); }
 
-/* ─── Results Table ─── */
-.table-wrapper {
-  background: var(--paper);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 24px;
+/* ─── Tables ─── */
+.table-wrapper { background: var(--paper); border: 1px solid var(--border-light); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 24px; }
+.table-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border-light); background: var(--paper-field); }
+.table-header h3 { font-family: var(--font-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); }
+.table-header .count { font-family: var(--font-mono); font-size: 11px; color: var(--ink-light); }
+table { width: 100%; border-collapse: collapse; }
+thead th { font-family: var(--font-mono); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+tbody td { padding: 12px 16px; border-bottom: 1px solid var(--border-light); font-size: 14px; color: var(--ink-mid); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--accent-glow); }
+td.code { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--accent); }
+td.code a { color: var(--accent); text-decoration: none; }
+td.code a:hover { text-decoration: underline; }
+td.url { font-family: var(--font-mono); font-size: 12px; color: var(--ink-light); max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+td.clicks { font-family: var(--font-mono); font-size: 13px; color: var(--ink); text-align: center; }
+td.date { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); }
+td.actions { text-align: right; white-space: nowrap; }
+td.note-cell { text-align: center; }
+.note-indicator {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold); opacity: 0.7;
 }
-
-.table-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border-light);
-  background: var(--paper-field);
-}
-
-.table-header h3 {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ink-muted);
-}
-
-.table-header .count {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-light);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead th {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ink-muted);
-  text-align: left;
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-tbody td {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border-light);
-  font-size: 14px;
-  color: var(--ink-mid);
-  vertical-align: middle;
-}
-
-tbody tr:last-child td {
-  border-bottom: none;
-}
-
-tbody tr:hover {
-  background: var(--accent-glow);
-}
-
-td.code {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--accent);
-}
-
-td.code a {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-td.code a:hover {
-  text-decoration: underline;
-}
-
-td.url {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--ink-light);
-  max-width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-td.clicks {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--ink);
-  text-align: center;
-}
-
-td.date {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-muted);
-}
-
-td.actions {
-  text-align: right;
-  white-space: nowrap;
-}
-
+.note-indicator.empty { background: var(--border); opacity: 0.4; }
 .copy-btn {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--ink-light);
-  padding: 3px 10px;
-  border-radius: 10px;
-  cursor: pointer;
-  margin-right: 6px;
-  transition: all 0.15s ease;
+  font-family: var(--font-mono); font-size: 10px; background: none;
+  border: 1px solid var(--border); color: var(--ink-light); padding: 3px 10px;
+  border-radius: 10px; cursor: pointer; margin-right: 6px; transition: all 0.15s ease;
 }
-
-.copy-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.edit-note-btn {
+  font-family: var(--font-mono); font-size: 10px; background: none;
+  border: 1px solid var(--border); color: var(--ink-light); padding: 3px 10px;
+  border-radius: 10px; cursor: pointer; margin-right: 6px; transition: all 0.15s ease;
 }
+.edit-note-btn:hover { border-color: var(--gold); color: var(--gold); }
 
 /* ─── Empty State ─── */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--ink-muted);
-}
-
-.empty-state .empty-icon {
-  font-size: 40px;
-  opacity: 0.2;
-  margin-bottom: 12px;
-}
-
-.empty-state p {
-  font-size: 15px;
-  font-style: italic;
-}
+.empty-state { text-align: center; padding: 60px 20px; color: var(--ink-muted); }
+.empty-state .empty-icon { font-size: 40px; opacity: 0.2; margin-bottom: 12px; }
+.empty-state p { font-size: 15px; font-style: italic; }
 
 /* ─── File Size Badge ─── */
-.size-badge {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  background: var(--paper-field);
-  padding: 2px 8px;
-  border-radius: 10px;
-  color: var(--ink-muted);
-}
+.size-badge { font-family: var(--font-mono); font-size: 10px; background: var(--paper-field); padding: 2px 8px; border-radius: 10px; color: var(--ink-muted); }
 
-/* ─── Stats Tab: Summary Cards ─── */
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 32px;
-}
-
-.summary-card {
-  background: var(--paper);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  box-shadow: var(--shadow-sm);
-}
-
-.summary-card .label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink-muted);
-  margin-bottom: 10px;
-}
-
-.summary-card .figure {
-  font-family: var(--font-serif);
-  font-size: 32px;
-  font-weight: 600;
-  color: var(--ink);
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.summary-card .breakdown {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--ink-muted);
-  margin-top: 8px;
-  letter-spacing: 0.04em;
-}
-
-.summary-card .breakdown .bot-count {
-  color: var(--ink-faint);
-}
-
+/* ─── Stats Cards ─── */
+.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
+.summary-card { background: var(--paper); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-sm); }
+.summary-card .label { font-family: var(--font-mono); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 10px; }
+.summary-card .figure { font-family: var(--font-serif); font-size: 32px; font-weight: 600; color: var(--ink); letter-spacing: -0.02em; line-height: 1; }
+.summary-card .breakdown { font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted); margin-top: 8px; letter-spacing: 0.04em; }
+.summary-card .breakdown .bot-count { color: var(--ink-faint); }
 .summary-card .orphaned-line {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--burgundy);
-  margin-top: 4px;
-  letter-spacing: 0.04em;
-  opacity: 0.75;
-  font-style: italic;
+  font-family: var(--font-mono); font-size: 10px; color: var(--burgundy);
+  margin-top: 4px; letter-spacing: 0.04em; opacity: 0.75; font-style: italic;
 }
 
-/* ─── Stats Tab: Tables ─── */
-td.country {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--ink-mid);
-}
+/* ─── Stats tables ─── */
+td.country { font-family: var(--font-mono); font-size: 12px; color: var(--ink-mid); }
+td.country .flag { display: inline-block; margin-right: 4px; font-style: normal; }
+td.referer { font-family: var(--font-mono); font-size: 11px; color: var(--ink-light); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+td.split { font-family: var(--font-mono); font-size: 12px; text-align: center; white-space: nowrap; }
+td.split .humans { color: var(--ink); font-weight: 500; }
+td.split .bots { color: var(--ink-faint); font-size: 10px; }
+td.split .sep { color: var(--border); margin: 0 4px; }
+tr.clickable { cursor: pointer; }
 
-td.country .flag {
-  display: inline-block;
-  margin-right: 4px;
-  font-style: normal;
-}
+/* ─── Detail panel modal ─── */
+.detail-overlay { position: fixed; inset: 0; background: rgba(28, 28, 28, 0.5); display: none; align-items: flex-start; justify-content: center; z-index: 100; padding: 80px 20px 20px; overflow-y: auto; }
+.detail-overlay.active { display: flex; }
+.detail-panel { background: var(--paper); border-radius: var(--radius); width: 100%; max-width: 800px; box-shadow: 0 12px 48px rgba(0,0,0,0.18); overflow: hidden; animation: slidein 0.25s cubic-bezier(0.25, 0.1, 0.25, 1); }
+@keyframes slidein { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+.detail-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border-light); background: var(--paper-field); }
+.detail-header .info { display: flex; flex-direction: column; gap: 4px; }
+.detail-header .info .code-display { font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--accent); }
+.detail-header .info .target { font-family: var(--font-mono); font-size: 11px; color: var(--ink-light); max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.detail-close { font-family: var(--font-mono); font-size: 18px; background: none; border: none; color: var(--ink-muted); cursor: pointer; padding: 4px 12px; border-radius: 4px; transition: all 0.15s ease; }
+.detail-close:hover { color: var(--ink); background: var(--border-light); }
+.detail-body { max-height: 70vh; overflow-y: auto; }
+.detail-body td.when { font-family: var(--font-mono); font-size: 11px; color: var(--ink-mid); white-space: nowrap; }
+.detail-body td.where { font-family: var(--font-mono); font-size: 12px; color: var(--ink-mid); }
+.detail-body td.where .ip { color: var(--ink-faint); font-size: 10px; display: block; margin-top: 2px; }
+.detail-body td.ua { font-family: var(--font-mono); font-size: 11px; color: var(--ink-light); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.detail-body tr.is-bot td { opacity: 0.55; }
+.detail-body td.tag { width: 1px; white-space: nowrap; }
+.detail-body td.tag .pill { font-family: var(--font-mono); font-size: 9px; padding: 2px 8px; border-radius: 8px; letter-spacing: 0.06em; text-transform: uppercase; }
+.detail-body td.tag .pill.human { background: rgba(74, 107, 90, 0.12); color: var(--green); }
+.detail-body td.tag .pill.bot { background: var(--paper-field); color: var(--ink-faint); }
+.detail-loading { text-align: center; padding: 40px; color: var(--ink-muted); font-style: italic; }
 
-td.referer {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-light);
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-td.split {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-td.split .humans {
-  color: var(--ink);
-  font-weight: 500;
-}
-
-td.split .bots {
-  color: var(--ink-faint);
-  font-size: 10px;
-}
-
-td.split .sep {
-  color: var(--border);
-  margin: 0 4px;
-}
-
-tr.clickable {
-  cursor: pointer;
-}
-
-/* ─── Stats Tab: Detail Panel (Modal) ─── */
-.detail-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(28, 28, 28, 0.5);
-  display: none;
-  align-items: flex-start;
-  justify-content: center;
-  z-index: 100;
-  padding: 80px 20px 20px;
-  overflow-y: auto;
-}
-
-.detail-overlay.active {
-  display: flex;
-}
-
-.detail-panel {
-  background: var(--paper);
-  border-radius: var(--radius);
-  width: 100%;
-  max-width: 800px;
-  box-shadow: 0 12px 48px rgba(0,0,0,0.18);
-  overflow: hidden;
+/* ─── Note edit modal (for editing existing notes) ─── */
+.edit-note-modal {
+  background: var(--paper); border-radius: var(--radius); width: 100%; max-width: 900px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.18); overflow: hidden;
   animation: slidein 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
-
-@keyframes slidein {
-  from { opacity: 0; transform: translateY(-12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.detail-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 24px;
-  border-bottom: 1px solid var(--border-light);
+.edit-note-modal .detail-body { padding: 24px; max-height: none; }
+.edit-note-modal .note-editor-grid { height: 320px; }
+.edit-note-modal .modal-actions {
+  padding: 16px 24px; border-top: 1px solid var(--border-light);
   background: var(--paper-field);
-}
-
-.detail-header .info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.detail-header .info .code-display {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--accent);
-}
-
-.detail-header .info .target {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-light);
-  max-width: 500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.detail-close {
-  font-family: var(--font-mono);
-  font-size: 18px;
-  background: none;
-  border: none;
-  color: var(--ink-muted);
-  cursor: pointer;
-  padding: 4px 12px;
-  border-radius: 4px;
-  transition: all 0.15s ease;
-}
-
-.detail-close:hover {
-  color: var(--ink);
-  background: var(--border-light);
-}
-
-.detail-body {
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-.detail-body table {
-  width: 100%;
-}
-
-.detail-body td.when {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-mid);
-  white-space: nowrap;
-}
-
-.detail-body td.where {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--ink-mid);
-}
-
-.detail-body td.where .ip {
-  color: var(--ink-faint);
-  font-size: 10px;
-  display: block;
-  margin-top: 2px;
-}
-
-.detail-body td.ua {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-light);
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.detail-body tr.is-bot td {
-  opacity: 0.55;
-}
-
-.detail-body td.tag {
-  width: 1px;
-  white-space: nowrap;
-}
-
-.detail-body td.tag .pill {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  padding: 2px 8px;
-  border-radius: 8px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.detail-body td.tag .pill.human {
-  background: rgba(74, 107, 90, 0.12);
-  color: var(--green);
-}
-
-.detail-body td.tag .pill.bot {
-  background: var(--paper-field);
-  color: var(--ink-faint);
-}
-
-.detail-loading {
-  text-align: center;
-  padding: 40px;
-  color: var(--ink-muted);
-  font-style: italic;
+  display: flex; justify-content: flex-end; gap: 10px;
 }
 
 /* ─── Responsive ─── */
@@ -801,6 +329,8 @@ tr.clickable {
   .summary-grid { grid-template-columns: repeat(2, 1fr); }
   .detail-overlay { padding: 20px 8px; }
   td.referer { max-width: 100px; }
+  .note-editor-grid { grid-template-columns: 1fr; height: auto; }
+  .note-editor-pane, .note-preview-pane { height: 200px; }
 }
 </style>
 </head>
@@ -821,7 +351,6 @@ tr.clickable {
 
 <div class="container">
 
-  <!-- Tabs -->
   <div class="tabs">
     <button class="tab active" data-panel="links">Links</button>
     <button class="tab" data-panel="files">Files</button>
@@ -849,7 +378,25 @@ tr.clickable {
             <input type="text" id="link-code" placeholder="my-link">
           </div>
         </div>
-        <button type="submit" class="btn btn-primary">Shorten</button>
+
+        <div class="note-section">
+          <button type="button" class="note-toggle" id="link-note-toggle">Add a note (optional)</button>
+          <div class="note-editor-wrapper" id="link-note-wrapper">
+            <div class="note-editor-grid">
+              <div class="note-editor-pane">
+                <label>Markdown</label>
+                <textarea id="link-note" class="note-textarea" placeholder="Write a note in Markdown. Visitors will see this before clicking through to the destination."></textarea>
+              </div>
+              <div class="note-preview-pane">
+                <span class="preview-label">Preview</span>
+                <div class="note-preview" id="link-note-preview"><span class="placeholder">Preview appears here…</span></div>
+              </div>
+            </div>
+            <div class="note-help">supports headings, lists, links, code, blockquotes, **bold**, *italic*</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 18px;">Shorten</button>
       </form>
     </div>
 
@@ -882,9 +429,27 @@ tr.clickable {
             <label>Custom code (optional)</label>
             <input type="text" id="file-code" placeholder="my-file">
           </div>
-          <div class="form-group" style="justify-content: flex-end;">
-            <button type="submit" class="btn btn-primary" id="upload-btn" disabled>Upload</button>
+        </div>
+
+        <div class="note-section">
+          <button type="button" class="note-toggle" id="file-note-toggle">Add a note (optional)</button>
+          <div class="note-editor-wrapper" id="file-note-wrapper">
+            <div class="note-editor-grid">
+              <div class="note-editor-pane">
+                <label>Markdown</label>
+                <textarea id="file-note" class="note-textarea" placeholder="Write a note in Markdown. Visitors will see this before downloading the file."></textarea>
+              </div>
+              <div class="note-preview-pane">
+                <span class="preview-label">Preview</span>
+                <div class="note-preview" id="file-note-preview"><span class="placeholder">Preview appears here…</span></div>
+              </div>
+            </div>
+            <div class="note-help">supports headings, lists, links, code, blockquotes, **bold**, *italic*</div>
           </div>
+        </div>
+
+        <div style="margin-top: 18px; display: flex; justify-content: flex-end;">
+          <button type="submit" class="btn btn-primary" id="upload-btn" disabled>Upload</button>
         </div>
       </form>
     </div>
@@ -956,7 +521,7 @@ tr.clickable {
 
 <!-- Detail panel (modal) -->
 <div class="detail-overlay" id="detail-overlay">
-  <div class="detail-panel">
+  <div class="detail-panel" id="detail-panel-content">
     <div class="detail-header">
       <div class="info">
         <div class="code-display" id="detail-code">—</div>
@@ -973,8 +538,10 @@ tr.clickable {
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── Helpers ───
+// ─── marked configuration ───
+marked.setOptions({ breaks: true, gfm: true });
 
+// ─── Helpers ───
 function toast(message, type = 'success') {
   const el = document.getElementById('toast');
   el.textContent = message;
@@ -997,40 +564,13 @@ async function api(method, path, body) {
   return data;
 }
 
-function formatDate(iso) {
-  if (!iso) return '—';
-  const d = new Date(iso + 'Z');
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-}
-
-function formatDateTime(iso) {
-  if (!iso) return '—';
-  const d = new Date(iso + 'Z');
-  return d.toLocaleString('en-GB', {
-    day: 'numeric', month: 'short', year: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
-}
-
-function formatSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-}
-
-function formatReferer(ref) {
-  if (!ref) return '—';
-  try {
-    const u = new URL(ref);
-    return u.hostname;
-  } catch {
-    return ref.slice(0, 40);
-  }
-}
+function formatDate(iso) { if (!iso) return '—'; const d = new Date(iso + 'Z'); return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
+function formatDateTime(iso) { if (!iso) return '—'; const d = new Date(iso + 'Z'); return d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+function formatSize(bytes) { if (bytes < 1024) return bytes + ' B'; if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'; return (bytes / (1024 * 1024)).toFixed(1) + ' MB'; }
+function formatReferer(ref) { if (!ref) return '—'; try { return new URL(ref).hostname; } catch { return ref.slice(0, 40); } }
 
 function summariseUserAgent(ua) {
   if (!ua) return '—';
-  // Try to pull out a recognisable browser/OS string
   let browser = 'Unknown';
   if (/Edg\//.test(ua)) browser = 'Edge';
   else if (/Chrome\//.test(ua) && !/Chromium/.test(ua)) browser = 'Chrome';
@@ -1042,59 +582,75 @@ function summariseUserAgent(ua) {
     const m = ua.match(/([A-Za-z0-9_-]+(?:bot|crawler|spider)[A-Za-z0-9_-]*)/i);
     browser = m ? m[1] : 'bot';
   }
-
   let os = '';
   if (/Mac OS X|macOS/.test(ua)) os = 'macOS';
   else if (/Windows/.test(ua)) os = 'Windows';
   else if (/Android/.test(ua)) os = 'Android';
   else if (/iPhone|iPad|iOS/.test(ua)) os = 'iOS';
   else if (/Linux/.test(ua)) os = 'Linux';
-
   return os ? browser + ' · ' + os : browser;
 }
 
 function flagFromCountryCode(code) {
   if (!code || code.length !== 2) return '';
-  // Convert two-letter country code to flag emoji
-  const A = 0x1F1E6; // Regional indicator A
-  return String.fromCodePoint(
-    A + code.toUpperCase().charCodeAt(0) - 65,
-    A + code.toUpperCase().charCodeAt(1) - 65
-  );
+  const A = 0x1F1E6;
+  return String.fromCodePoint(A + code.toUpperCase().charCodeAt(0) - 65, A + code.toUpperCase().charCodeAt(1) - 65);
 }
 
 function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    toast('Copied to clipboard');
-  });
+  navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard'));
 }
 
 function escapeHtml(s) {
   if (s == null) return '';
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-// ─── Tabs ───
+// ─── Note editor wiring ───
+function wireNoteEditor(toggleId, wrapperId, textareaId, previewId) {
+  const toggle = document.getElementById(toggleId);
+  const wrapper = document.getElementById(wrapperId);
+  const textarea = document.getElementById(textareaId);
+  const preview = document.getElementById(previewId);
 
+  toggle.addEventListener('click', () => {
+    const expanded = wrapper.classList.toggle('expanded');
+    toggle.classList.toggle('expanded', expanded);
+    if (expanded) setTimeout(() => textarea.focus(), 50);
+  });
+
+  function updatePreview() {
+    const md = textarea.value;
+    if (!md.trim()) {
+      preview.innerHTML = '<span class="placeholder">Preview appears here…</span>';
+      return;
+    }
+    try {
+      preview.innerHTML = marked.parse(md);
+    } catch (e) {
+      preview.innerHTML = '<span class="placeholder">Preview error: ' + escapeHtml(e.message) + '</span>';
+    }
+  }
+
+  textarea.addEventListener('input', updatePreview);
+  return { toggle, wrapper, textarea, preview, updatePreview };
+}
+
+const linkNoteEditor = wireNoteEditor('link-note-toggle', 'link-note-wrapper', 'link-note', 'link-note-preview');
+const fileNoteEditor = wireNoteEditor('file-note-toggle', 'file-note-wrapper', 'file-note', 'file-note-preview');
+
+// ─── Tabs ───
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
-    if (tab.dataset.panel === 'stats') {
-      loadStatsPanel();
-    }
+    if (tab.dataset.panel === 'stats') loadStatsPanel();
   });
 });
 
 // ─── Header strip stats ───
-
 async function loadStats() {
   try {
     const s = await api('GET', '/api/stats');
@@ -1106,38 +662,36 @@ async function loadStats() {
 }
 
 // ─── Links ───
-
 async function loadLinks() {
   try {
     const links = await api('GET', '/api/links');
     const container = document.getElementById('links-table');
     document.getElementById('links-count').textContent = links.length + ' total';
-
     if (links.length === 0) {
       container.innerHTML = '<div class="empty-state"><div class="empty-icon">⟶</div><p>No links yet. Create your first one above.</p></div>';
       return;
     }
-
-    let html = '<table><thead><tr><th>Code</th><th>Destination</th><th>Title</th><th>Clicks</th><th>Created</th><th></th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Code</th><th>Destination</th><th>Title</th><th>Note</th><th>Clicks</th><th>Created</th><th></th></tr></thead><tbody>';
     for (const link of links) {
       const shortUrl = location.origin + '/' + link.code;
+      const hasNote = link.note && link.note.trim();
       html += `<tr>
         <td class="code"><a href="${shortUrl}" target="_blank">${escapeHtml(link.code)}</a></td>
         <td class="url" title="${escapeHtml(link.url)}">${escapeHtml(link.url)}</td>
         <td>${escapeHtml(link.title || '')}</td>
+        <td class="note-cell" title="${hasNote ? 'has a note' : 'no note'}"><span class="note-indicator ${hasNote ? '' : 'empty'}"></span></td>
         <td class="clicks">${link.clicks}</td>
         <td class="date">${formatDate(link.created_at)}</td>
         <td class="actions">
           <button class="copy-btn" onclick="copyToClipboard('${shortUrl}')">copy</button>
+          <button class="edit-note-btn" onclick="openNoteEditor('link', '${escapeHtml(link.code)}')">${hasNote ? 'edit note' : 'add note'}</button>
           <button class="btn-danger" onclick="deleteLink('${escapeHtml(link.code)}')">delete</button>
         </td>
       </tr>`;
     }
     html += '</tbody></table>';
     container.innerHTML = html;
-  } catch (e) {
-    toast(e.message, 'error');
-  }
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 async function deleteLink(code) {
@@ -1145,11 +699,8 @@ async function deleteLink(code) {
   try {
     await api('DELETE', '/api/links/' + code);
     toast('Link deleted');
-    loadLinks();
-    loadStats();
-  } catch (e) {
-    toast(e.message, 'error');
-  }
+    loadLinks(); loadStats();
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 document.getElementById('shorten-form').addEventListener('submit', async (e) => {
@@ -1159,19 +710,19 @@ document.getElementById('shorten-form').addEventListener('submit', async (e) => 
       url: document.getElementById('link-url').value,
       title: document.getElementById('link-title').value,
       custom_code: document.getElementById('link-code').value,
+      note: document.getElementById('link-note').value || null,
     });
     toast('Shortened: ' + result.short_url);
     copyToClipboard(result.short_url);
     document.getElementById('shorten-form').reset();
-    loadLinks();
-    loadStats();
-  } catch (e) {
-    toast(e.message, 'error');
-  }
+    linkNoteEditor.preview.innerHTML = '<span class="placeholder">Preview appears here…</span>';
+    linkNoteEditor.wrapper.classList.remove('expanded');
+    linkNoteEditor.toggle.classList.remove('expanded');
+    loadLinks(); loadStats();
+  } catch (e) { toast(e.message, 'error'); }
 });
 
 // ─── Files ───
-
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 const fileInfo = document.getElementById('file-info');
@@ -1182,14 +733,10 @@ dropZone.addEventListener('click', () => fileInput.click());
 dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
 dropZone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  dropZone.classList.remove('dragover');
+  e.preventDefault(); dropZone.classList.remove('dragover');
   if (e.dataTransfer.files.length) selectFile(e.dataTransfer.files[0]);
 });
-
-fileInput.addEventListener('change', () => {
-  if (fileInput.files.length) selectFile(fileInput.files[0]);
-});
+fileInput.addEventListener('change', () => { if (fileInput.files.length) selectFile(fileInput.files[0]); });
 
 function selectFile(file) {
   selectedFile = file;
@@ -1205,24 +752,19 @@ document.getElementById('upload-form').addEventListener('submit', (e) => {
   const formData = new FormData();
   formData.append('file', selectedFile);
   const customCodeInput = document.getElementById('file-code');
-  if (customCodeInput && customCodeInput.value) {
-    formData.append('custom_code', customCodeInput.value);
-  }
+  if (customCodeInput && customCodeInput.value) formData.append('custom_code', customCodeInput.value);
+  const noteVal = document.getElementById('file-note').value;
+  if (noteVal) formData.append('note', noteVal);
 
   const progressEl = document.getElementById('upload-progress');
   const barEl = document.getElementById('upload-progress-bar');
   const textEl = document.getElementById('upload-progress-text');
-
-  progressEl.classList.add('active');
-  textEl.classList.add('active');
-  barEl.style.width = '0%';
-  textEl.textContent = '0%';
-  uploadBtn.disabled = true;
-  uploadBtn.textContent = 'UPLOADING…';
+  progressEl.classList.add('active'); textEl.classList.add('active');
+  barEl.style.width = '0%'; textEl.textContent = '0%';
+  uploadBtn.disabled = true; uploadBtn.textContent = 'UPLOADING…';
 
   const xhr = new XMLHttpRequest();
   xhr.open('POST', '/api/upload');
-
   xhr.upload.addEventListener('progress', (event) => {
     if (event.lengthComputable) {
       const pct = (event.loaded / event.total) * 100;
@@ -1230,15 +772,11 @@ document.getElementById('upload-form').addEventListener('submit', (e) => {
       textEl.textContent = Math.round(pct) + '% — ' + formatSize(event.loaded) + ' / ' + formatSize(event.total);
     }
   });
-
   xhr.addEventListener('load', () => {
-    progressEl.classList.remove('active');
-    textEl.classList.remove('active');
+    progressEl.classList.remove('active'); textEl.classList.remove('active');
     uploadBtn.textContent = 'UPLOAD';
-
     let data;
     try { data = JSON.parse(xhr.responseText); } catch { data = {}; }
-
     if (xhr.status >= 200 && xhr.status < 300) {
       toast('Uploaded: ' + data.short_url);
       copyToClipboard(data.short_url);
@@ -1246,22 +784,20 @@ document.getElementById('upload-form').addEventListener('submit', (e) => {
       selectedFile = null;
       fileInfo.style.display = 'none';
       uploadBtn.disabled = true;
-      loadFiles();
-      loadStats();
+      fileNoteEditor.preview.innerHTML = '<span class="placeholder">Preview appears here…</span>';
+      fileNoteEditor.wrapper.classList.remove('expanded');
+      fileNoteEditor.toggle.classList.remove('expanded');
+      loadFiles(); loadStats();
     } else {
       toast(data.error || 'Upload failed', 'error');
       uploadBtn.disabled = false;
     }
   });
-
   xhr.addEventListener('error', () => {
-    progressEl.classList.remove('active');
-    textEl.classList.remove('active');
-    uploadBtn.textContent = 'UPLOAD';
-    uploadBtn.disabled = false;
+    progressEl.classList.remove('active'); textEl.classList.remove('active');
+    uploadBtn.textContent = 'UPLOAD'; uploadBtn.disabled = false;
     toast('Network error during upload', 'error');
   });
-
   xhr.send(formData);
 });
 
@@ -1270,32 +806,31 @@ async function loadFiles() {
     const files = await api('GET', '/api/files');
     const container = document.getElementById('files-table');
     document.getElementById('files-count').textContent = files.length + ' total';
-
     if (files.length === 0) {
       container.innerHTML = '<div class="empty-state"><div class="empty-icon">↑</div><p>No files yet. Upload your first one above.</p></div>';
       return;
     }
-
-    let html = '<table><thead><tr><th>Code</th><th>Filename</th><th>Size</th><th>Downloads</th><th>Created</th><th></th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Code</th><th>Filename</th><th>Size</th><th>Note</th><th>Downloads</th><th>Created</th><th></th></tr></thead><tbody>';
     for (const file of files) {
       const shortUrl = location.origin + '/' + file.code;
+      const hasNote = file.note && file.note.trim();
       html += `<tr>
         <td class="code"><a href="${shortUrl}" target="_blank">${escapeHtml(file.code)}</a></td>
         <td>${escapeHtml(file.original_name)}</td>
         <td><span class="size-badge">${formatSize(file.size)}</span></td>
+        <td class="note-cell" title="${hasNote ? 'has a note' : 'no note'}"><span class="note-indicator ${hasNote ? '' : 'empty'}"></span></td>
         <td class="clicks">${file.downloads}</td>
         <td class="date">${formatDate(file.created_at)}</td>
         <td class="actions">
           <button class="copy-btn" onclick="copyToClipboard('${shortUrl}')">copy</button>
+          <button class="edit-note-btn" onclick="openNoteEditor('file', '${escapeHtml(file.code)}')">${hasNote ? 'edit note' : 'add note'}</button>
           <button class="btn-danger" onclick="deleteFile('${escapeHtml(file.code)}')">delete</button>
         </td>
       </tr>`;
     }
     html += '</tbody></table>';
     container.innerHTML = html;
-  } catch (e) {
-    toast(e.message, 'error');
-  }
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 async function deleteFile(code) {
@@ -1303,19 +838,72 @@ async function deleteFile(code) {
   try {
     await api('DELETE', '/api/files/' + code);
     toast('File deleted');
-    loadFiles();
-    loadStats();
-  } catch (e) {
-    toast(e.message, 'error');
+    loadFiles(); loadStats();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ─── Note edit modal (re-uses detail-overlay) ───
+async function openNoteEditor(kind, code) {
+  // Find current note
+  const list = await api('GET', kind === 'link' ? '/api/links' : '/api/files');
+  const item = list.find(x => x.code === code);
+  if (!item) { toast('Item not found', 'error'); return; }
+  const currentNote = item.note || '';
+
+  document.getElementById('detail-code').textContent = code;
+  document.getElementById('detail-target').textContent = kind === 'link' ? item.url : item.original_name;
+
+  // Replace the detail-panel content for this modal use
+  const panel = document.getElementById('detail-panel-content');
+  panel.classList.add('edit-note-modal');
+  document.getElementById('detail-body').innerHTML = `
+    <div class="note-editor-grid">
+      <div class="note-editor-pane">
+        <label>Markdown</label>
+        <textarea id="modal-note-textarea" class="note-textarea"></textarea>
+      </div>
+      <div class="note-preview-pane">
+        <span class="preview-label">Preview</span>
+        <div class="note-preview" id="modal-note-preview"></div>
+      </div>
+    </div>
+    <div class="note-help">supports headings, lists, links, code, blockquotes, **bold**, *italic*</div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closeDetail()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNote('${kind}', '${escapeHtml(code)}')">Save</button>
+    </div>
+  `;
+  const textarea = document.getElementById('modal-note-textarea');
+  const preview = document.getElementById('modal-note-preview');
+  textarea.value = currentNote;
+  function update() {
+    if (!textarea.value.trim()) {
+      preview.innerHTML = '<span class="placeholder">Preview appears here…</span>';
+    } else {
+      try { preview.innerHTML = marked.parse(textarea.value); }
+      catch (e) { preview.innerHTML = '<span class="placeholder">Preview error</span>'; }
+    }
   }
+  textarea.addEventListener('input', update);
+  update();
+
+  document.getElementById('detail-overlay').classList.add('active');
+  setTimeout(() => textarea.focus(), 50);
+}
+
+async function saveNote(kind, code) {
+  const note = document.getElementById('modal-note-textarea').value;
+  try {
+    const endpoint = kind === 'link' ? '/api/links/' : '/api/files/';
+    await api('PATCH', endpoint + code + '/note', { note });
+    toast(note.trim() ? 'Note saved' : 'Note cleared');
+    closeDetail();
+    if (kind === 'link') loadLinks(); else loadFiles();
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 // ─── Stats Panel ───
-
-let statsLoaded = false;
-
 async function loadStatsPanel() {
-  // Always reload to keep numbers fresh, but cheap requests
   try {
     const [summary, topLinks, topFiles] = await Promise.all([
       api('GET', '/api/stats/summary'),
@@ -1323,7 +911,6 @@ async function loadStatsPanel() {
       api('GET', '/api/stats/top-files?limit=50'),
     ]);
 
-    // Summary cards — humans/bots
     document.getElementById('sum-24h-humans').textContent = summary.humans_24h || 0;
     document.getElementById('sum-24h-bots').textContent = (summary.bots_24h || 0) + ' bots';
     document.getElementById('sum-7d-humans').textContent = summary.humans_7d || 0;
@@ -1333,7 +920,6 @@ async function loadStatsPanel() {
     document.getElementById('sum-all-humans').textContent = summary.humans_all || 0;
     document.getElementById('sum-all-bots').textContent = (summary.bots_all || 0) + ' bots';
 
-    // Orphaned line — only show when non-zero
     const showOrphaned = (key) => {
       const count = summary['orphaned_' + key] || 0;
       const line = document.getElementById('sum-' + key + '-orphaned-line');
@@ -1344,28 +930,19 @@ async function loadStatsPanel() {
         line.style.display = 'none';
       }
     };
-    showOrphaned('24h');
-    showOrphaned('7d');
-    showOrphaned('30d');
-    showOrphaned('all');
+    showOrphaned('24h'); showOrphaned('7d'); showOrphaned('30d'); showOrphaned('all');
 
-    renderTopLinks(topLinks);
-    renderTopFiles(topFiles);
-    statsLoaded = true;
-  } catch (e) {
-    toast('Could not load stats: ' + e.message, 'error');
-  }
+    renderTopLinks(topLinks); renderTopFiles(topFiles);
+  } catch (e) { toast('Could not load stats: ' + e.message, 'error'); }
 }
 
 function renderTopLinks(rows) {
   const container = document.getElementById('top-links-table');
   document.getElementById('top-links-count').textContent = rows.length + ' shown';
-
   if (rows.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">∅</div><p>No links yet.</p></div>';
     return;
   }
-
   let html = '<table><thead><tr><th>Code</th><th>Destination</th><th>Hits</th><th>Top country</th><th>Top referrer</th><th>Last hit</th></tr></thead><tbody>';
   for (const r of rows) {
     const flag = flagFromCountryCode(r.top_country_code);
@@ -1385,12 +962,10 @@ function renderTopLinks(rows) {
 function renderTopFiles(rows) {
   const container = document.getElementById('top-files-table');
   document.getElementById('top-files-count').textContent = rows.length + ' shown';
-
   if (rows.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">∅</div><p>No files yet.</p></div>';
     return;
   }
-
   let html = '<table><thead><tr><th>Code</th><th>Filename</th><th>Downloads</th><th>Top country</th><th>Top referrer</th><th>Last hit</th></tr></thead><tbody>';
   for (const r of rows) {
     const flag = flagFromCountryCode(r.top_country_code);
@@ -1408,29 +983,26 @@ function renderTopFiles(rows) {
 }
 
 // ─── Detail Panel ───
-
 const detailOverlay = document.getElementById('detail-overlay');
 const detailBody = document.getElementById('detail-body');
 
 async function openDetail(code, target) {
+  // Reset modal class in case the note editor was open
+  document.getElementById('detail-panel-content').classList.remove('edit-note-modal');
   document.getElementById('detail-code').textContent = code;
   document.getElementById('detail-target').textContent = target || '';
   detailBody.innerHTML = '<div class="detail-loading">Loading…</div>';
   detailOverlay.classList.add('active');
-
   try {
     const rows = await api('GET', '/api/stats/detail/' + encodeURIComponent(code) + '?limit=200');
     if (rows.length === 0) {
       detailBody.innerHTML = '<div class="empty-state"><div class="empty-icon">∅</div><p>No clicks recorded yet for this code.</p></div>';
       return;
     }
-
     let html = '<table><thead><tr><th>When</th><th>Where</th><th>Referrer</th><th>Browser/OS</th><th></th></tr></thead><tbody>';
     for (const r of rows) {
       const flag = flagFromCountryCode(r.country_code);
-      const place = r.country
-        ? (r.city ? r.city + ', ' + r.country : r.country)
-        : '—';
+      const place = r.country ? (r.city ? r.city + ', ' + r.country : r.country) : '—';
       const ref = formatReferer(r.referer);
       const ua = summariseUserAgent(r.user_agent);
       html += `<tr class="${r.is_bot ? 'is-bot' : ''}">
@@ -1450,20 +1022,15 @@ async function openDetail(code, target) {
 
 function closeDetail() {
   detailOverlay.classList.remove('active');
+  document.getElementById('detail-panel-content').classList.remove('edit-note-modal');
 }
 
 document.getElementById('detail-close').addEventListener('click', closeDetail);
-detailOverlay.addEventListener('click', (e) => {
-  if (e.target === detailOverlay) closeDetail();
-});
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && detailOverlay.classList.contains('active')) closeDetail();
-});
+detailOverlay.addEventListener('click', (e) => { if (e.target === detailOverlay) closeDetail(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && detailOverlay.classList.contains('active')) closeDetail(); });
 
 // ─── Init ───
-loadStats();
-loadLinks();
-loadFiles();
+loadStats(); loadLinks(); loadFiles();
 </script>
 </body>
 </html>
