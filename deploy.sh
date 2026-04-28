@@ -24,6 +24,9 @@ rsync -rlptDvz --delete \
 echo "→ Fixing ownership..."
 ssh trocp 'sudo chown -R ghostuser:ghostuser /var/www/slouch'
 
+echo "→ Restoring executable bit on backup.sh..."
+ssh trocp 'sudo chmod +x /var/www/slouch/backup.sh'
+
 echo "→ Restarting slouch service..."
 ssh trocp 'sudo systemctl restart slouch'
 
