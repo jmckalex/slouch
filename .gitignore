@@ -1,11 +1,15 @@
+.DS_Store
 node_modules/
+og-cache/
 slouch.db
 slouch.db-shm
 slouch.db-wal
 uploads/
 slouch.service
-.DS_Store
+.env
+.env.local
 *.swp
 *.swo
+*.log
 .vscode/
 .idea/
