@@ -12,6 +12,7 @@ rsync -rlptDvz --delete \
   --exclude='slouch.db-shm' \
   --exclude='slouch.db-wal' \
   --exclude='uploads' \
+  --exclude='og-cache' \
   --exclude='.git' \
   --exclude='.gitignore' \
   --exclude='deploy.sh' \
