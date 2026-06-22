@@ -558,7 +558,7 @@ const storage = multer.diskStorage({
     cb(null, crypto.randomBytes(16).toString('hex') + ext);
   }
 });
-const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
+const upload = multer({ storage });
 
 function requireAuth(req, res, next) {
   const auth = req.headers.authorization;

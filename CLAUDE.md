@@ -20,7 +20,7 @@ strong reason not to.
 - **Node + Express** — single process, listens on `127.0.0.1:PORT` (default 3001).
 - **better-sqlite3** — synchronous SQLite (`slouch.db`, WAL mode). All queries are
   prepared once into the `stmts` object near the top of `server.js`.
-- **multer** — file uploads to `uploads/`, stored under a random hex name, 50 MB limit.
+- **multer** — file uploads to `uploads/`, stored under a random hex name, no size limit.
 - **nanoid** — random 6-char codes (`CODE_LENGTH`).
 - **marked + isomorphic-dompurify** — note rendering (Markdown → sanitized HTML).
 - **puppeteer (headless Chromium)** — renders the interstitial into a 1200×630 PNG
@@ -28,6 +28,10 @@ strong reason not to.
 - **Frontend** — static HTML in `public/`, no framework:
   - `public/splash.html` — public landing page at `/`.
   - `public/index.html` — admin dashboard at `/admin` (~1000 lines, self-contained).
+
+Note: uploads are unbounded — both multer and nginx (`client_max_body_size 0`)
+have their size limits disabled. Uploads are admin-only, so the practical bound
+is the droplet's disk.
   - `public/vendor/mathjax/` — vendored MathJax, served at `/vendor/...`.
 
 ## Commands
@@ -61,7 +65,8 @@ behind an nginx reverse proxy terminating HTTPS (Let's Encrypt / certbot).
 - `SETUP.md` — one-time server provisioning (systemd, nginx, certbot, DNS).
 - `nginx-slouch.conf`, `slouch.service.example` — the deployed configs (the real
   `slouch.service` is gitignored because it contains the admin password).
-- `client_max_body_size 50m` in nginx must stay in sync with multer's 50 MB limit.
+- Upload size is uncapped: nginx uses `client_max_body_size 0` and multer has no
+  `limits`. If you ever reintroduce a cap, set it in both places to keep them in sync.
 
 Backups: `backup.sh` runs nightly via cron on the droplet, doing a SQLite hot
 backup (`.backup` + `integrity_check`) and rsyncing `slouch.db`, `uploads/`, and
